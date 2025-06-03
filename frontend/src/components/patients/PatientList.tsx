@@ -3,7 +3,7 @@ import EmptyState from '@components/patients/ui/EmptyState';
 import ErrorState from '@components/patients/ui/ErrorState';
 import LoadingState from '@components/patients/ui/LoadingState';
 import { usePatients } from '@queries/patient';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const PatientList = () => {
   const [searchName, setSearchName] = useState('');
@@ -13,6 +13,18 @@ const PatientList = () => {
   const { data, isLoading, isError, error, refetch } = usePatients(
     searchQuery ? { name: searchQuery } : undefined
   );
+
+  const filteredPatients = useMemo(() => {
+    if (!data?.patients) return [];
+
+    if (!searchQuery) {
+      return data.patients
+    }
+
+    return data.patients?.filter((patient) =>
+    patient.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+}, [data, searchQuery]);
 
   const handleSearch = () => {
     setSearchQuery(searchName);
@@ -34,7 +46,7 @@ const PatientList = () => {
       />
     );
 
-  if (!data || !data.patients || data.patients.length === 0) return <EmptyState />;
+  if (!data?.patients?.length) return <EmptyState />;
 
   return (
     <div className="w-full overflow-hidden">
@@ -105,7 +117,7 @@ const PatientList = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {data.patients.map((patient) => (
+              {filteredPatients.map((patient) => (
                 <PatientRow key={patient.id} patient={patient} />
               ))}
             </tbody>
@@ -115,7 +127,7 @@ const PatientList = () => {
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 gap-2">
         <div className="text-sm text-gray-700">
-          Showing <span className="font-medium">{data.patients.length}</span> patient(s)
+          Showing <span className="font-medium">{filteredPatients.length}</span> patient(s)
         </div>
       </div>
     </div>
