@@ -59,13 +59,13 @@ async def root():
 
 
 @app.get("/patients/", response_model=list[Patient], tags=["Patients"])
-async def list_patients() -> list[Patient]:
+async def list_patients(limit: int = 10) -> list[Patient]:
     """
     Get all patients.
     """
 
     mapped_patients = []
-    for p in patients:
+    for p in patients[0:limit]:
         # Extract full name from name array (family name + given names)
         full_name = ""
         if p.get("name") and len(p["name"]) > 0:
