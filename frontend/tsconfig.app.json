@@ -38,7 +38,8 @@
       "@types/*": [
         "src/types/*"
       ]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": [
     "src"
