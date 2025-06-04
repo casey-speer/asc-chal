@@ -4,7 +4,6 @@ import { useParams } from "react-router";
 const Patient = () => {
   const { id } = useParams();
   const { data: patient, isLoading, isError, error } = usePatientDetails(id!);
-  console.log("patient", patient)
 
   if (!patient) {
     return <div>Loading...</div>;
