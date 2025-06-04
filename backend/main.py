@@ -85,6 +85,33 @@ async def list_patients(limit: int = 10) -> list[Patient]:
 
     return mapped_patients
 
+@app.get("/patients/{id}", response_model=Patient, tags=["Patient"])
+async def patient(id: str) -> Patient:
+    """
+    Get patient by id
+    """
+    print("DEBUG", id)
+
+    for p in patients:
+        # Extract full name from name array (family name + given names)
+        full_name = ""
+        if p.get("id") and p.get("id") == id:
+            name_obj = p["name"][0]
+            given_names = " ".join(name_obj.get("given", []))
+            family_name = name_obj.get("family", "")
+            full_name = f"{given_names} {family_name}".strip()
+
+            # Transform to match Patient model
+            mapped_patient = {
+                "resourceType": p.get("resourceType", ""),
+                "id": p.get("id", ""),
+                "full_name": full_name,
+                "birth_date": p.get("birthDate", ""),
+            }
+
+            return mapped_patient
+    return None
+
 
 @app.post("/fhir/push", tags=["FHIR Operations"])
 async def push_patient_to_fhir(resource: FHIRResource):

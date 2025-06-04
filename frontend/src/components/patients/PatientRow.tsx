@@ -1,4 +1,5 @@
 import { Patient } from '@queries/patient';
+import { Link } from 'react-router';
 
 interface PatientRowProps {
   patient: Patient;
@@ -13,7 +14,7 @@ const PatientRow = ({ patient }: PatientRowProps) => {
   return (
     <tr className="hover:bg-gray-50">
       <td className="px-4 py-3 whitespace-nowrap">
-        <div className="text-sm font-medium text-gray-900">{patient.full_name}</div>
+        <div className="text-sm font-medium text-gray-900"><Link to={`/patients/${patient.id}`}>{patient.full_name}</Link></div>
       </td>
       <td className="px-4 py-3 whitespace-nowrap hidden sm:table-cell">
         <div className="text-sm text-gray-500">{formatDate(patient.birth_date)}</div>
